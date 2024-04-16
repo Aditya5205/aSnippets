@@ -9,11 +9,8 @@ export default {
     extend: {
       colors: {
         primary: "#4608ad",
-        blue: {
-          600: "#ffffff",
-        },
       },
     },
   },
-  plugins: [require("flowbite/plugin")],
+  // plugins: [require("flowbite/plugin")],
 };

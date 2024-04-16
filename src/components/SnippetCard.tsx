@@ -29,7 +29,7 @@ const SnippetCard = ({
 
   return (
     <li
-      className={`my-2 flex h-fit min-h-8 rounded-md bg-slate-200/50 px-2 ${isEdit ? "flex-col justify-center gap-y-3 py-1" : "flex-row items-center"}`}
+      className={` my-2 flex h-fit min-h-8 rounded-md bg-slate-200/50 px-2 ${isEdit ? "flex-col justify-center gap-y-3 py-2 " : "flex-row items-center"}`}
     >
       <input
         type="text"
@@ -47,7 +47,7 @@ const SnippetCard = ({
 
       <div className={`ml-auto flex gap-x-2`}>
         <button
-          className="rounded-md bg-[#4608ad] p-0.5 hover:opacity-80"
+          className="h-7 w-7 rounded-md bg-[#4608ad] p-0.5 hover:opacity-80"
           onClick={() => {
             setIsEdit((prev) => !prev);
             if (isEdit) {

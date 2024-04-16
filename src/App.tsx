@@ -10,91 +10,80 @@ const App = () => {
   const dispatch = useAppDispatch();
 
   const [isNoSnippets, setIsNoSnippets] = useState<boolean>(true);
+  const [showSlideOne, setShowSlideOne] = useState<boolean>(true);
 
   useEffect(() => {
-    const storageSnippets = JSON.parse(
-      localStorage.getItem("snippets") || '""',
-    );
-    if (storageSnippets && storageSnippets.length > 0) {
-      setIsNoSnippets(false);
-      for (let item of storageSnippets) {
-        dispatch(addSnippet({ key: item.key, value: item.value }));
-      }
-    } else setIsNoSnippets(true);
+    chrome.storage.local
+      .get(["snippets"])
+      .then((res) => {
+        if (Object.keys(res).length === 0) return "";
+        else return JSON.parse(res.snippets);
+      })
+      .catch((err) => {
+        console.log(err);
+      })
+      .then((res: string | any[]) => {
+        if (res && res.length > 0) {
+          setIsNoSnippets(false);
+          for (let item of res) {
+            dispatch(addSnippet({ key: item.key, value: item.value }));
+          }
+        } else setIsNoSnippets(true);
+      });
+    // chrome.storage.local.get(console.log);
   }, []);
+
+  useEffect(() => {
+    chrome.contextMenus.removeAll(() => {});
+
+    snippetsList.map((snippet) => {
+      chrome.contextMenus.create({
+        title: snippet.key,
+        contexts: ["editable"],
+        id: snippet.value,
+      });
+    });
+
+    if (snippetsList.length === 0) setIsNoSnippets(true);
+    else setIsNoSnippets(false);
+  }, [snippetsList]);
 
   return (
     <>
-      <div className=" flex h-screen items-center justify-center text-white">
-        <div className="h-fit min-h-[302.5px] w-[500px] rounded-lg bg-[#1f2937]">
-          <h2 className="rounded-t-lg bg-[#4608ad] px-3 py-2 text-left text-2xl font-bold">
-            aSnippets
-          </h2>
+      <div className="h-fit min-h-[335px] w-[500px] bg-[#1f2937] text-[16px] text-white">
+        <h2 className="bg-[#4608ad] px-3 py-2 text-left text-2xl font-bold focus:ring-red-500 active:ring-red-500">
+          aSnippets
+        </h2>
 
-          <div className=" border-gray-200 dark:border-gray-700">
-            <ul
-              className="flex flex-wrap text-center text-sm font-medium"
-              id="default-tab"
-              data-tabs-toggle="#default-tab-content"
-              role="tablist"
-            >
-              <li className="me-2 brightness-150" role="presentation">
-                <button
-                  className="inline-block rounded-t-lg border-b p-4"
-                  id="profile-tab"
-                  data-tabs-target="#profile"
-                  type="button"
-                  role="tab"
-                  aria-controls="profile"
-                  aria-selected="false"
-                >
-                  Add Snippet
-                </button>
+        <div className="mb-3 mt-1 flex h-10 w-full gap-x-2 px-2">
+          <button
+            className={`flex-grow ${showSlideOne ? "rounded-t-lg border-b border-b-white bg-slate-200/10" : "opacity-50 hover:opacity-30"}`}
+            onClick={() => setShowSlideOne(true)}
+          >
+            Add Snippet
+          </button>
+          <button
+            className={`flex-grow ${showSlideOne ? "opacity-50 hover:opacity-30" : " rounded-t-lg border-b border-b-white bg-slate-200/10"}`}
+            onClick={() => setShowSlideOne(false)}
+          >
+            Your Snippets
+          </button>
+        </div>
+        <div className={`${showSlideOne ? "block" : "hidden"}`}>
+          <SnippetForm setIsNoSnippets={setIsNoSnippets} />
+        </div>
+        <div className={`p-2 ${showSlideOne ? "hidden" : "block"}`}>
+          <ul className="no-scrollbar mt-1 max-h-48 overflow-y-scroll">
+            {isNoSnippets ? (
+              <li className="text-center">
+                No snippets to show for now. <br /> Add snippets to show here.
               </li>
-              <li className="me-2 brightness-150" role="presentation">
-                <button
-                  className="inline-block rounded-t-lg border-b p-4 hover:border-gray-300 hover:text-gray-600 dark:hover:text-gray-300"
-                  id="dashboard-tab"
-                  data-tabs-target="#dashboard"
-                  type="button"
-                  role="tab"
-                  aria-controls="dashboard"
-                  aria-selected="false"
-                >
-                  Your Snippets
-                </button>
-              </li>
-            </ul>
-          </div>
-          <div id="default-tab-content">
-            <div
-              className="hidden rounded-lg p-2 dark:bg-gray-800"
-              id="profile"
-              role="tabpanel"
-              aria-labelledby="profile-tab"
-            >
-              <SnippetForm setIsNoSnippets={setIsNoSnippets} />
-            </div>
-            <div
-              className="hidden rounded-lg p-2 dark:bg-gray-800"
-              id="dashboard"
-              role="tabpanel"
-              aria-labelledby="dashboard-tab"
-            >
-              <ul className="mt-1 max-h-48 overflow-y-scroll">
-                {isNoSnippets ? (
-                  <li className="text-center">
-                    No snippets to show for now. <br /> Add snippets to show
-                    here.
-                  </li>
-                ) : (
-                  snippetsList.map((item) => (
-                    <SnippetCard item={item} key={item.id} />
-                  ))
-                )}
-              </ul>
-            </div>
-          </div>
+            ) : (
+              snippetsList.map((item) => (
+                <SnippetCard item={item} key={item.id} />
+              ))
+            )}
+          </ul>
         </div>
       </div>
     </>
