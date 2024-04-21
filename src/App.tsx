@@ -34,7 +34,7 @@ const App = () => {
   }, []);
 
   useEffect(() => {
-    chrome.contextMenus.removeAll(() => {});
+    chrome.contextMenus.removeAll();
 
     snippetsList.map((snippet) => {
       chrome.contextMenus.create({

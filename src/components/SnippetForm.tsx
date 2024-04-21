@@ -1,7 +1,7 @@
 import { FormEvent, useState, useEffect } from "react";
 import { useAppDispatch, useAppSelector } from "../hooks/hooks";
 import { addSnippet } from "../features/snippets/snippetSlice";
-import tickIcon from "../../public/images/check-mark.png";
+import checkIcon from "../../public/icons/check.svg";
 
 const SnippetForm = ({ setIsNoSnippets }: { setIsNoSnippets: Function }) => {
   const snippetsList = useAppSelector((state) => state.snippets);
@@ -95,7 +95,7 @@ const SnippetForm = ({ setIsNoSnippets }: { setIsNoSnippets: Function }) => {
         {isConfirmAdded && (
           <div className="flex h-8 items-center rounded-md bg-primary px-5 text-center text-base">
             Snippet added.
-            <img src={tickIcon} alt="✅" className="ml-3 h-6 w-6" />
+            <img src={checkIcon} alt="✅" className="ml-3 h-6 w-6" />
           </div>
         )}
         <button

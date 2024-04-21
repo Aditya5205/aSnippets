@@ -4,6 +4,9 @@ import {
   updateSnippet,
 } from "../features/snippets/snippetSlice";
 import { useAppDispatch } from "../hooks/hooks";
+import editIcon from "../../public/icons/edit.svg";
+import saveIcon from "../../public/icons/save.svg";
+import deleteIcon from "../../public/icons/delete.svg";
 
 const SnippetCard = ({
   item,
@@ -47,7 +50,7 @@ const SnippetCard = ({
 
       <div className={`ml-auto flex gap-x-2`}>
         <button
-          className="h-7 w-7 rounded-md bg-[#4608ad] p-0.5 hover:opacity-80"
+          className="flex h-7 w-7 items-center justify-center rounded-md bg-[#4608ad] p-0.5 hover:opacity-80"
           onClick={() => {
             setIsEdit((prev) => !prev);
             if (isEdit) {
@@ -55,15 +58,19 @@ const SnippetCard = ({
             }
           }}
         >
-          {!isEdit ? "✏️" : "📁"}
+          {!isEdit ? (
+            <img src={editIcon} alt="✏️" className="h-5 w-5" />
+          ) : (
+            <img src={saveIcon} alt="📁" className="h-5 w-5" />
+          )}
         </button>
         <button
-          className={`h-7 w-7 rounded-md bg-[#4608ad] p-0.5 hover:opacity-80`}
+          className={`flex h-7 w-7 items-center justify-center rounded-md bg-[#4608ad] p-0.5 hover:opacity-80`}
           onClick={() => {
             handleDeleteSnippet(item.id);
           }}
         >
-          ❌
+          <img src={deleteIcon} alt="❌" className="h-5 w-5" />
         </button>
       </div>
     </li>

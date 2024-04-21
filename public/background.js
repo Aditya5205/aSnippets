@@ -5,12 +5,10 @@ function doSometing(info) {
 
 chrome.contextMenus.onClicked.addListener((info, tab) => {
   if (!tab.url.includes("chrome://")) {
-    chrome.scripting
-      .executeScript({
-        target: { tabId: tab.id },
-        func: doSometing,
-        args: [info],
-      })
-      .then(() => console.log("injected"));
+    chrome.scripting.executeScript({
+      target: { tabId: tab.id },
+      func: doSometing,
+      args: [info],
+    });
   }
 });
